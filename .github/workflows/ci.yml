@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore TaskApi.slnx
+
+      - name: Build
+        run: dotnet build TaskApi.slnx -c Release --no-restore
+
+      - name: Test
+        run: >
+          dotnet test TaskApi.slnx -c Release --no-build
+          --logger "trx;LogFileName=test-results.trx"
+          --results-directory ./test-results
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/*.trx
+
+  docker:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t taskapi:ci ./TaskApi
+
+      - name: Smoke test container
+        run: |
+          docker run -d --name taskapi -p 8080:8080 taskapi:ci
+          curl --fail --silent --retry 15 --retry-delay 2 --retry-connrefused http://localhost:8080/
+          curl --fail --silent -X POST http://localhost:8080/api/tasks \
+            -H "Content-Type: application/json" \
+            -d '{"title":"ci smoke test","priority":"High"}'
+          curl --fail --silent http://localhost:8080/api/tasks | grep "ci smoke test"
+
+      - name: Show container logs on failure
+        if: failure()
+        run: docker logs taskapi
