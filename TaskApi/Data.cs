@@ -4,7 +4,7 @@ using Dapper;
 using Microsoft.Data.Sqlite;
 
 namespace TaskApi;
-this is dummy
+
 // ---- 1. Connection factory: a fresh connection per operation (never share one across requests) ----
 public interface IDbConnectionFactory
 {
