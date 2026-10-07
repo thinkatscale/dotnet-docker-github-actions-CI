@@ -16,7 +16,7 @@ COPY TaskApi.csproj .
 RUN dotnet restore
 
 COPY . .
-RUN dotnet publish TaskApi.csproj -c Release -o /app/publish --no-restore /p:UseAppHost=false
+RUN dotnet publish TaskApi.csproj -c Release -o /app/publish /p:UseAppHost=false
 
 # ---------- Stage 3: final image = runtime base + published app ----------
 FROM base AS final

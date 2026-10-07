@@ -1,0 +1,12 @@
+**/bin/
+**/obj/
+.vs/
+.vscode/
+*.md
+*.http
+*.db
+*.db-wal
+*.db-shm
+Dockerfile
+.dockerignore
+.git/
