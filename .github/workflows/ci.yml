@@ -54,11 +54,7 @@ jobs:
       - name: Smoke test container
         run: |
           docker run -d --name taskapi -p 8080:8080 taskapi:ci
-          curl --fail --silent --retry 15 --retry-delay 2 --retry-connrefused http://localhost:8080/
-          curl --fail --silent -X POST http://localhost:8080/api/tasks \
-            -H "Content-Type: application/json" \
-            -d '{"title":"ci smoke test","priority":"High"}'
-          curl --fail --silent http://localhost:8080/api/tasks | grep "ci smoke test"
+          bash scripts/smoke-test.sh http://localhost:8080
 
       - name: Show container logs on failure
         if: failure()
