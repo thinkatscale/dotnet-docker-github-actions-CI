@@ -23,4 +23,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 USER $APP_UID
-ENTRYPOINT ["dotnet", "TaskApi.dll"] asdasd
+ENTRYPOINT ["dotnet", "TaskApi.dll"]
