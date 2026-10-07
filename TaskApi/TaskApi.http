@@ -1,0 +1,40 @@
+@host = http://localhost:8080
+
+### Create
+POST {{host}}/api/tasks
+Content-Type: application/json
+
+{ "title": "Learn modern C#", "priority": "High" }
+
+### Create (invalid -> 400 ProblemDetails)
+POST {{host}}/api/tasks
+Content-Type: application/json
+
+{ "title": "   " }
+
+### List all
+GET {{host}}/api/tasks
+
+### Filter
+GET {{host}}/api/tasks?done=false
+
+### Get one
+GET {{host}}/api/tasks/1
+
+### Partial update (send the version from your last GET)
+PATCH {{host}}/api/tasks/1
+Content-Type: application/json
+
+{ "isDone": true, "version": 1 }
+
+### Same PATCH again -> 409 Conflict (version is now 2)
+PATCH {{host}}/api/tasks/1
+Content-Type: application/json
+
+{ "title": "stale write", "version": 1 }
+
+### Delete
+DELETE {{host}}/api/tasks/1
+
+### OpenAPI document
+GET {{host}}/openapi/v1.json
