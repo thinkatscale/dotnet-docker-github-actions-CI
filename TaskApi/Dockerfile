@@ -10,6 +10,8 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
+# Copy only the project file first so the restore layer is cached
+# until your dependencies actually change.
 COPY TaskApi.csproj .
 RUN dotnet restore
 
@@ -20,11 +22,5 @@ RUN dotnet publish TaskApi.csproj -c Release -o /app/publish --no-restore /p:Use
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
-
-# SQLite file lives in /data. Create it and give the non-root user write access,
-# otherwise SQLite fails with "unable to open database file" / "readonly database".
-RUN mkdir -p /data && chown $APP_UID:$APP_UID /data
-ENV ConnectionStrings__Default="Data Source=/data/tasks.db"
-
 USER $APP_UID
 ENTRYPOINT ["dotnet", "TaskApi.dll"]
