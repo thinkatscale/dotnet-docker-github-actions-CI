@@ -6,7 +6,7 @@ services:
       pull: true          # always pull the latest sdk:10.0 and aspnet:10.0 (runtime) base images
     pull_policy: build    # use the locally built image; don't try to pull "taskapi" from a registry
     ports:
-      - "8081:8080"
+      - "18080:18080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
     volumes:

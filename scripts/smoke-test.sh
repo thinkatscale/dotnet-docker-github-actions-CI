@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-base="${1:-http://localhost:8080}"
+base="${1:-http://localhost:18080}"
 
 echo "Waiting for $base ..."
 for i in $(seq 1 30); do

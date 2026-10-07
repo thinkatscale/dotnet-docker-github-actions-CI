@@ -53,8 +53,8 @@ jobs:
 
       - name: Smoke test container
         run: |
-          docker run -d --name taskapi -p 8080:8080 taskapi:ci
-          bash scripts/smoke-test.sh http://localhost:8080
+          docker run -d --name taskapi -p 18080:18080 taskapi:ci
+          bash scripts/smoke-test.sh http://localhost:18080
 
       - name: Show container logs on failure
         if: failure()
